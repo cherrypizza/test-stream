@@ -20,5 +20,9 @@
     "@koa/router": "^10.1.1",
     "koa": "^2.13.3",
     "nats": "^2.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cherrypizza/test-stream.git"
   }
 }
