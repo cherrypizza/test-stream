@@ -17,8 +17,9 @@ xhr2.send();
 - результат в хранилище файлов сервиса Writer (fileStorage/writerStorage)
 
 ## API Reader
-POST /start?fileName=<fileName>
-<fileName> - наименование файла из хранилища файлов сервиса Reader (fileStorage/readerStorage)
+POST /start?fileName=parameter
+
+где parameter - наименование файла из хранилища файлов сервиса Reader (fileStorage/readerStorage)
 Запускает процесс считывания и передачи и запись файла в хранилище файлов сервиса Writer (fileStorage/writerStorage).
 
 ## Дополнительные задания
