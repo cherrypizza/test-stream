@@ -69,12 +69,24 @@ module.exports = class NatsTransport {
   }
 
   /**
-   * Отправляет данные с указанной темой.
+   * Отправляет данные с указанной темой и ждет ответа.
    * @param {Uint8Array} data - Данные.
    * @param {string} subject - Наименование темы.
+   * * @return {Promise}
    */
   send ({ data, subject }) {
-    this._nc.publish(subject, data)
+    return new Promise((resolve, reject) => {
+      const callback = (err, msg) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      }
+      const inbox = createInbox()
+      this._nc.subscribe(inbox, { callback })
+      this._nc.publish(subject, data, { reply: inbox })
+    })
   }
 
   /**
@@ -87,7 +99,10 @@ module.exports = class NatsTransport {
       if (err) {
         console.log('err: ', err)
       } else {
-        fileProcessing.write({ data: msg.data, mapKey: msg.subject })
+        fileProcessing.magic(msg.data).then(data => {
+          fileProcessing.write({ data, mapKey: msg.subject })
+          msg.respond()
+        })
       }
     }
 

@@ -62,4 +62,12 @@ module.exports = class FileProcessing {
       stream.write(data)
     }
   }
+
+  magic (data) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(data)
+      }, 500)
+    })
+  }
 }
