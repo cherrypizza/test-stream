@@ -8,6 +8,23 @@ module.exports = class FileProcessing {
   }
 
   /**
+   * Проверяет существование директории для записи файлов.
+   * Если ее нет, то создает.
+   */
+  initStorage () {
+    const dirPath = path.join(__dirname, writerConst.FILE_STORAGE)
+    return new Promise((resolve, reject) => {
+      fs.mkdir(dirPath, { recursive: true }, (err) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
+
+  /**
    * Создает writable-поток для указанного файла и сохраняет в коллекции потоков.
    * @param {string} fileName - Наименование файла.
    * @param {string} mapKey - Ключ коллекции потоков.

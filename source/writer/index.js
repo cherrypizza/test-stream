@@ -6,10 +6,16 @@ const { writer: writerConst } = require('../constants')
 const port = writerConst.PORT
 
 const fileProcessing = new FileProcessing()
-const transport = new Transport()
-transport.init().then(() => {
-  transport.listen(fileProcessing)
-})
+fileProcessing.initStorage()
+  .then(() => {
+    const transport = new Transport()
+    transport.init().then(() => {
+      transport.listen(fileProcessing)
+    })
+  })
+  .catch((err) => {
+    console.log(err)
+  })
 
 const app = new Koa()
 
