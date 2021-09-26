@@ -1,0 +1,24 @@
+{
+  "name": "test-stream",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "mocha test/reader.js",
+    "reader": "node source/reader",
+    "writer": "node source/writer"
+  },
+  "author": "Timoshina Vi",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "mocha": "^9.1.2",
+    "nock": "^13.1.3",
+    "standard": "^16.0.3",
+    "supertest": "^6.1.0"
+  },
+  "dependencies": {
+    "@koa/router": "^10.1.1",
+    "koa": "^2.13.3",
+    "nats": "^2.2.0"
+  }
+}
