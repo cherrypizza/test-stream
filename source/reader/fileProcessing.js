@@ -9,36 +9,43 @@ const fs = require('fs')
    */
 module.exports.start = async ({ transport, filePath, fileName }) => {
   const fileSubject = transport.createInbox()
-  let counter = 0
 
   try {
     await transport.startTransfer({ fileName, fileSubject })
     const stream = fs.createReadStream(filePath)
 
-    stream.on('data', (chunk) => {
-      counter++
-      transport.send({ data: chunk, subject: fileSubject })
-        .then(() => { counter-- })
-        .catch(err => console.log(err))
+    let next = false
+    const sendData = () => {
+      setTimeout(() => {
+        if (next) {
+          next = false
+          const chunk = stream.read()
+          if (chunk) {
+            transport.send({ data: chunk, subject: fileSubject })
+              .then(() => { sendData() })
+              .catch(err => console.log(err))
+          } else {
+            console.log(`${fileName} reading end.`)
+            transport.endTransfer({ fileName, fileSubject })
+          }
+        } else {
+          sendData()
+        }
+      }, 0)
+    }
+    stream.on('readable', () => {
+      next = true
     })
 
     stream.on('end', () => {
-      console.log(`${fileName} reading end.`)
-      const checkProgress = () => {
-        setTimeout(() => {
-          if (counter > 0) {
-            checkProgress()
-          } else {
-            transport.endTransfer({ fileName, fileSubject })
-          }
-        }, 0)
-      }
-      checkProgress()
+      next = true
     })
 
     stream.on('error', (err) => {
       console.log(err)
     })
+
+    sendData()
   } catch (err) {
     console.log(err)
   }

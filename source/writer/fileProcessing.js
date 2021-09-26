@@ -55,19 +55,25 @@ module.exports = class FileProcessing {
    * Находит поток в коллекции по указанному ключу и записывает данные.
    * @param {Uint8Array} data - Данные.
    * @param {string} mapKey - Ключ коллекции потоков.
+   * @return {Promise}
    */
   write ({ data, mapKey }) {
-    if (this._streams.has(mapKey)) {
+    return new Promise(resolve => {
       const { stream } = this._streams.get(mapKey)
-      stream.write(data)
-    }
+      const next = stream.write(data)
+      if (!next) {
+        stream.once('drain', resolve)
+      } else {
+        resolve()
+      }
+    })
   }
 
   magic (data) {
     return new Promise(resolve => {
       setTimeout(() => {
         resolve(data)
-      }, 500)
+      }, 0)
     })
   }
 }

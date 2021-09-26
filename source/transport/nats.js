@@ -72,7 +72,7 @@ module.exports = class NatsTransport {
    * Отправляет данные с указанной темой и ждет ответа.
    * @param {Uint8Array} data - Данные.
    * @param {string} subject - Наименование темы.
-   * * @return {Promise}
+   * @return {Promise}
    */
   send ({ data, subject }) {
     return new Promise((resolve, reject) => {
@@ -100,8 +100,9 @@ module.exports = class NatsTransport {
         console.log('err: ', err)
       } else {
         fileProcessing.magic(msg.data).then(data => {
-          fileProcessing.write({ data, mapKey: msg.subject })
-          msg.respond()
+          fileProcessing.write({ data, mapKey: msg.subject }).then(() => {
+            msg.respond()
+          }).catch((err) => console.log(err))
         })
       }
     }
